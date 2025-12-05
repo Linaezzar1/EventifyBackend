@@ -11,6 +11,7 @@ const messageRoutes = require('./routes/message');
 const eventRoutes = require('./routes/event');        // ← à rajouter
 const taskRoutes = require('./routes/task');          // ← si tu as des tasks
 const Message = require('./models/Message');
+const notifRoute = require('./routes/notificationRoute')
 
 const app = express();
 app.use(express.json());
@@ -23,7 +24,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/events', eventRoutes);          // ← events
 app.use('/api/events', taskRoutes);           // ← tasks (si ton router les monte sur /api/events/:eventId/tasks)
 // Ajoute ici d'autres routes si tu en as
-
+app.use('/api/notifications',notifRoute);
 const server = http.createServer(app);
 
 const io = new Server(server, {
