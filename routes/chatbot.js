@@ -7,8 +7,4 @@ const { authMiddleware } = require('../middlewares/auth');
 // POST /api/chatbot/chat
 router.post('/chat', authMiddleware, chatbotController.chatWithBot);
 
-// Route alternative plus simple (sans API externe)
-// POST /api/chatbot/simple
-router.post('/simple', authMiddleware, chatbotController.chatSimple);
-
 module.exports = router;
