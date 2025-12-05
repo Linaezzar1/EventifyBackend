@@ -12,6 +12,7 @@ const eventRoutes = require('./routes/event');        // ← à rajouter
 const taskRoutes = require('./routes/task');          // ← si tu as des tasks
 const Message = require('./models/Message');
 const notifRoute = require('./routes/notificationRoute')
+const chatbotRoutes = require('./routes/chatbot');
 
 const app = express();
 app.use(express.json());
@@ -19,6 +20,8 @@ app.use(cors());
 
 // Toutes les routes HTTP
 app.use('/api/auth', authRoutes);
+
+app.use('/api/users', authRoutes); // Alternative route pour compatibilité
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/events', eventRoutes);          // ← events
@@ -78,6 +81,8 @@ io.on('connection', (socket) => {
 function makeConversationId(a, b) {
   return [a, b].sort().join('_');
 }
+app.use('/api/chatbot', chatbotRoutes);
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => console.log(`Server + socket.io on port ${PORT}`));
