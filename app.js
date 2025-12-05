@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/event');
 const userRoutes = require('./routes/user');
 const taskRoutes = require('./routes/task');
+const chatbotRoutes = require('./routes/chatbot');
 
 const app = express();
 app.use(express.json());
@@ -17,9 +18,11 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
     .catch(err => console.log(err));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/users', authRoutes); // Alternative route pour compatibilité
 app.use('/api/events', eventRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/events', taskRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
