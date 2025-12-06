@@ -30,6 +30,38 @@ exports.sendMessage = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.sendMessage = async (req, res) => {
+  try {
+    const { receiverId, content } = req.body;
+    const senderId = req.user.id;
+
+    if (!receiverId || !content) {
+      return res.status(400).json({ message: 'Destinataire et contenu requis.' });
+    }
+
+    const receiver = await User.findById(receiverId);
+    if (!receiver) {
+      return res.status(404).json({ message: 'Destinataire introuvable.' });
+    }
+
+    let message = new Message({
+      sender: senderId,
+      receiver: receiverId,
+      content
+    });
+
+    await message.save();
+
+    message = await Message.findById(message._id)
+      .populate('sender', 'name email _id')
+      .populate('receiver', 'name email _id');
+
+    res.status(201).json(message);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 // GET /api/messages/:otherUserId
 // Récupère la conversation entre l’utilisateur connecté et otherUserId
@@ -62,9 +94,12 @@ exports.getInbox = async (req, res) => {
 
     const messages = await Message.find({
       $or: [{ sender: userId }, { receiver: userId }]
-    }).sort({ createdAt: -1 });
+    })
+      .sort({ createdAt: -1 })
+      .populate('sender', 'name email')
+      .populate('receiver', 'name email');
 
-    res.json({ data: messages });
+    res.json(messages);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
